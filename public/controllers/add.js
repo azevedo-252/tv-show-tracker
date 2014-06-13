@@ -4,6 +4,8 @@ angular.module('MyApp')
       Show.save(
         { showName: $scope.show.name },
         function() {
+          $scope.show.name = '';
+          $scope.addForm.$setPristine();
           $alert({
             content: 'TV show has been added.',
             placement: 'top-right',
@@ -12,6 +14,8 @@ angular.module('MyApp')
           });
         },
         function(response) {
+          $scope.show.name = '';
+          $scope.addForm.$setPristine();
           $alert({
             content: response.data.message,
             placement: 'top-right',
@@ -19,7 +23,5 @@ angular.module('MyApp')
             duration: 3
           });
         });
-      $scope.show.name = '';
-      $scope.addForm.$setPristine();
     };
   }]);
