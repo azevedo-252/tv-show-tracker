@@ -74,7 +74,7 @@ mongoose.connect('localhost');
 
 // ********************* Passport configuration *********************
 
-// Serialize and deserialize methods are used to keep you signed-in
+// Persist login sessions
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -85,6 +85,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+// Local strategy
 passport.use(new LocalStrategy(
   { usernameField: 'email' },
   function(email, password, done) {
@@ -249,6 +250,30 @@ app.post('/api/shows', function(req, res, next) {
         }
         return next(err);
       }
+      res.send(200);
+    });
+  });
+});
+
+// Subscription API Routes
+app.post('/api/subscribe', ensureAuthenticated, function(req, res, next) {
+  Show.findById(req.body.showId, function(err, show) {
+    if (err) return next(err);
+    show.subscribers.push(req.body.userId);
+    show.save(function(err) {
+      if (err) return next(err);
+      res.send(200);
+    });
+  });
+});
+
+app.post('/api/unsubscribe', ensureAuthenticated, function(req, res, next) {
+  Show.findById(req.body.showId, function(err, show) {
+    if (err) return next(err);
+    var index = show.subscribers.indexOf(req.body.userId);
+    show.subscribers.splice(index, 1);
+    show.save(function(err) {
+      if (err) return next(err);
       res.send(200);
     });
   });
