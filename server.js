@@ -9,9 +9,12 @@ var async = require('async');
 var request = require('request');
 var xml2js = require('xml2js');
 var _ = require('lodash');
+// Authentication modules
 var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+// Perf Optimization modules
+// var compress = require('compression')
 
 
 // ********************* Mongodb schemas *********************
@@ -107,6 +110,7 @@ passport.use(new LocalStrategy(
 var app = express();
 
 app.set('port', process.env.PORT || 3000);
+// app.use(compress());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -114,7 +118,14 @@ app.use(cookieParser());
 app.use(session({ secret: 'keyboard cat' }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+var oneDay = 86400000;
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneDay }));
+app.use(function(req, res, next) {
+  if (req.user) {
+    res.cookie('user', JSON.stringify(req.user));
+  }
+  next();
+});
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) next();
@@ -287,13 +298,6 @@ app.get('*', function(req, res) {
 app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.send(500, { message: err.message });
-});
-
-app.use(function(req, res, next) {
-  if (req.user) {
-    res.cookie('user', JSON.stringify(req.user));
-  }
-  next();
 });
 
 app.listen(app.get('port'), function() {
