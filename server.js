@@ -14,7 +14,7 @@ var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 // Perf Optimization modules
-// var compress = require('compression')
+var compress = require('compression')
 
 
 // ********************* Mongodb schemas *********************
@@ -110,7 +110,7 @@ passport.use(new LocalStrategy(
 var app = express();
 
 app.set('port', process.env.PORT || 3000);
-// app.use(compress());
+app.use(compress());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
