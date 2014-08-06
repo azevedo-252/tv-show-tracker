@@ -72,7 +72,8 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 var User = mongoose.model('User', userSchema);
 var Show = mongoose.model('Show', showSchema);
 
-mongoose.connect('mongodb://bruno:foobar@ds031319.mongolab.com:31319/tv-show-tracker');
+// mongoose.connect('mongodb://bruno:foobar@ds031319.mongolab.com:31319/tv-show-tracker');
+mongoose.connect('localhost');
 
 
 // ********************* Passport configuration *********************
