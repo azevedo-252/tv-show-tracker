@@ -51,9 +51,10 @@ gulp.task('templates', function() {
 // Rerun the task when a file changes
 gulp.task('watch', function() {
   gulp.watch('public/stylesheets/*.scss', ['sass']);
-  gulp.watch(['public/**/.js', '!public/app.min.js', '!public/vendor'], ['compress']);
+  gulp.watch('public/views/**/*.html', ['templates']);
+  gulp.watch(['public/**/*.js', '!public/app.min.js', '!public/templates.js', '!public/vendor'], ['compress']);
 });
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('default', ['sass', 'watch']);
+// gulp.task('default', ['sass', 'watch']);
 gulp.task('default', ['sass', 'compress', 'templates', 'watch']);
